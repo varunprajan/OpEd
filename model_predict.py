@@ -20,11 +20,11 @@ PUNCTTBL = dict.fromkeys(i for i in xrange(sys.maxunicode)
 LDA, TF = pickleizer.load_topic_analyzer(pickleizer.SUBDIR)
 MODEL = pickleizer.load_model(pickleizer.SUBDIR)
 AUTHORID = pickleizer.load_author(pickleizer.SUBDIR)
-N_AUTHORS = len(AUTHORID)
-N_DAYS = 7
-N_TOPICS = LDA.components_.shape[0]
 
 def feature_names():
+    N_AUTHORS = len(AUTHORID)
+    N_DAYS = 7
+    N_TOPICS = LDA.components_.shape[0]
     topicnames = ['topic{0}'.format(i) for i in range(N_TOPICS)]
     authornames = ['author{0}'.format(i) for i in range(N_AUTHORS)]
     daynames = ['Day{0}'.format(i) for i in range(n_days)]
@@ -85,6 +85,7 @@ def author_num(firstname,lastname,authorid):
         lastname = float('nan')
     nauthors = len(authorid) + 1
     idauth = authorid.get((firstname,lastname),0)
+    print(idauth)
     auth = np.zeros((nauthors,1))
     auth[idauth] = 1
     return auth
