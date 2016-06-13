@@ -16,6 +16,9 @@ con = psycopg2.connect(database = dbname, user = user)
 
 app.var = {}
 
+AUTHORID = pickleizer.load_author(pickleizer.SUBDIR)
+DAYSOFWEEK = [
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -26,7 +29,7 @@ def index():
 @app.route('/input', methods = ['GET', 'POST'])
 def oped_input():
     if request.method == 'GET':
-        return render_template("input.html", authorid = AUTHORID)
+        return render_template("input.html", authorid = AUTHORID, daysofweek = DAYSOFWEEK)
     elif request.method == 'POST':
         # app.var['fulltext'] = request.args.get('full_text')
         # app.var['author'] = request.args.get('author')
