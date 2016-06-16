@@ -27,11 +27,14 @@ def feature_names():
 
 def predict_new_article_url(firstname,lastname,dayofweek,url):
     fulltext = nytc.url_full_text(url)
-    return predict_new_article_text(firstname,lastname,dayofweek,fulltext)
+    weights = article_weights(fulltext)
+    return predict_new_article_text(firstname,lastname,dayofweek,weights)
 
-def predict_new_article_text(firstname,lastname,dayofweek,text,fac=100):
+def article_weights(text):
     tidiedtext = text_processing.tidy_text_and_join(text)
-    weights = article_topic_weights(tidiedtext,LDA,TF)
+    return article_topic_weights(tidiedtext,LDA,TF)
+
+def predict_new_article_text(firstname,lastname,dayofweek,weights,fac=100):
     author = author_num(firstname,lastname,AUTHORID)
     days = day_of_week(dayofweek)
     feature = np.append(weights,author)
@@ -50,10 +53,6 @@ def day_of_week(day,ndays=7):
     return days
 
 def author_num(firstname,lastname,authorid):
-    if firstname is None:
-        firstname = float('nan')
-    if lastname is None:
-        lastname = float('nan')
     nauthors = len(authorid) + 1
     idauth = authorid.get((firstname,lastname),0)
     auth = np.zeros((nauthors,1))

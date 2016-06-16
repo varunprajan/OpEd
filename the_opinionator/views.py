@@ -5,7 +5,10 @@ from sqlalchemy_utils import database_exists, create_database
 from a_Model import ModelIt
 import pandas as pd
 import psycopg2
-from model_predict import AUTHORID, predict_new_article_text
+from model_predict import AUTHORID, predict_new_article_text, article_weights
+from similar_articles import predict_similar_articles
+import copy
+import numpy as np
 
 user = 'varun' #add your username here (same as previous postgreSQL)                      
 host = 'localhost'
@@ -16,8 +19,7 @@ con = psycopg2.connect(database = dbname, user = user)
 
 app.var = {}
 
-AUTHORID = pickleizer.load_author(pickleizer.SUBDIR)
-DAYSOFWEEK = [
+DAYSOFWEEK = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 
 @app.route('/')
 @app.route('/index')
@@ -29,23 +31,66 @@ def index():
 @app.route('/input', methods = ['GET', 'POST'])
 def oped_input():
     if request.method == 'GET':
-        return render_template("input.html", authorid = AUTHORID, daysofweek = DAYSOFWEEK)
+        authorid2 = copy.copy(AUTHORID)
+        del authorid2[(None,None)]
+        return render_template("input.html", authorid = authorid2, daysofweek = DAYSOFWEEK)
     elif request.method == 'POST':
         # app.var['fulltext'] = request.args.get('full_text')
         # app.var['author'] = request.args.get('author')
         # app.var['day'] = int(request.args.get('day'))
-        app.var['fulltext'] = request.form['full_text']
-        app.var['author'] = request.form['author']
-        app.var['day'] = request.form['day']
-        return redirect('/output')
+        fulltext = request.form['full_text']
+        firstname, lastname = author_to_names(request.form['author'])
+        day = int(request.form['day']) - 1
+        weights = article_weights(fulltext)
+        app.var['expectedshares'] = predict_new_article_text(firstname,lastname,day,weights)
+        app.var['articlessame'], app.var['articlesother'] = predict_similar_articles(weights,firstname,lastname)
+        if 'Predict' in request.form:
+            return redirect('/output')
+        elif 'Similar' in request.form:
+            return redirect('/similar')
+        else:
+            raise ValueError('Bad request')
 
+def author_to_names(author):
+    firstname, lastname = author.split()
+    if firstname == 'None' and lastname == 'None':
+        firstname, lastname = None, None
+    return firstname, lastname
+    
 @app.route('/output', methods = ['GET','POST'])
 def oped_output():
     if request.method == 'GET':
-        fulltext = app.var['fulltext']
-        firstname, lastname = app.var['author'].split()
-        day = app.var['day']
-        if firstname == 'None' and lastname == 'None':
-            firstname, lastname = None, None
-        expectedshares = predict_new_article_text(firstname,lastname,day,fulltext)
-        return render_template('output.html', expectedshares=expectedshares)
+        return render_template('output.html', expectedshares=app.var['expectedshares'])
+    
+@app.route('/similar', methods  = ['GET', 'POST'])
+def similar_opeds():
+    if request.method == 'GET':
+        table_same = df_to_tabledict(app.var['articlessame'])
+        table_other = df_to_tabledict(app.var['articlesother'])
+        return render_template('similar.html', same=table_same, other=table_other)
+    
+def df_to_tabledict(df):
+    res = []
+    for i, row in enumerate(df.iterrows()):
+        rowdata = row[1]
+        firstname = rowdata['first_name']
+        lastname = rowdata['last_name']
+        if firstname is None:
+            firstname = ''
+        if lastname is None:
+            lastname = 'The Editorial Board'            
+        res.append({'index': i + 1,
+                    'url': rowdata['url'],
+                    'title': rowdata['title'],
+                    'first_name': firstname,
+                    'last_name': lastname,
+                    'sharecount': rowdata['share_count']})
+    return res
+
+@app.route('/d32')
+def d32():
+    return render_template('sample10_d3.html')
+
+@app.route('/d3')
+def d3():
+    return render_template('sample11_d3.html')
