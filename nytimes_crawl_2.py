@@ -12,8 +12,10 @@ from nytimesarticle import articleAPI
 from datetime import datetime
 import os
 
-apikey = os.environ['NYTIMESAPIKEY']
-api = articleAPI(apikey)
+with open('config.yml', 'r') as f:
+    doc = yaml.load(f)
+    apikey = doc['NYTIMESAPIKEY']
+    api = articleAPI(apikey)
 
 def parse_url_for_date(url,searchstr='.com/'):
     n = len(searchstr)

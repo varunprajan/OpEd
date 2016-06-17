@@ -9,20 +9,23 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Starter Template for Bootstrap</title>
+    <title>The Opinionator: How Will Your Opinion Fare?</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="starter-template.css" rel="stylesheet">
+    <link href="static/css/starter-template.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+    <script src="static/js/ie-emulation-modes-warning.js"></script>
+      
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.2.0.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -32,7 +35,7 @@
   </head>
 
   <body>
-
+    <header class="intro">
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -42,45 +45,51 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="/input"><strong>The Opinionator</strong></a>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
+        <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Visualizations <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                  <li><a href="/d32">Time series</a></li>
+                  <li><a href="/d3">Clustering</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More information <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="static/insight_demo.pdf">Presentation</a></li>
+                <li><a href="https://www.linkedin.com/in/varun-rajan-1620a971">LinkedIn</a></li>
+              </ul>
+            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-
-<br><br>
+    </header>
       
  <div class="container">
     <div class="starter-template">
         <h2>The Opinionator predicts...</h2>
         <p>Articles with similar topics written by the same author are:
             <table class="table table-hover"> 
-            <tr><th>Result #</th><th>Author</th><th>Url</th><th>Share Count</th></tr> 
+            <tr><th>Result #</th><th>Author</th><th>Title</th><th>Share Count</th></tr> 
             {% for row in same %}
-            <tr><td>{{ row['index'] }}</td><td>{{ row['first_name']|title }} {{row['last_name']|title }}</td><td> <a href={{ row['url'] }}>row['title']</a> </td><td> {{ row['sharecount'] }}</td></tr>
+            <tr><td>{{ row['index'] }}</td><td>{{ row['first_name']|title }} {{row['last_name']|title }}</td><td> <a href={{ row['url'] }}>{{row['title']}}</a> </td><td> {{ row['sharecount'] }}</td></tr>
             {% endfor %}
-        </table>
+            </table>
         </p>
      
         <p>Articles with similar topics written by other authors are:
             <table class="table table-hover"> 
-            <tr><th>Result #</th><th>Author</th><th>Url</th><th>Share Count</th></tr> 
+            <tr><th>Result #</th><th>Author</th><th>Title</th><th>Share Count</th></tr> 
             {% for row in other %}
-            <tr><td>{{ row['index'] }}</td><td>{{ row['first_name']|title }} {{row['last_name']|title }}</td><td> {{ row['url'] }} </td><td> {{ row['sharecount'] }}</td></tr>
+            <tr><td>{{ row['index'] }}</td><td>{{ row['first_name']|title }} {{row['last_name']|title }}</td><td> <a href={{ row['url'] }}>{{row['title']}}</a> </td><td> {{ row['sharecount'] }}</td></tr>
             {% endfor %}
         </table>
         </p>
     </div>
-
-
-      <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-      <script src="static/js/bootstrap.min.js"></script>
 
 
  </div><!-- /.container -->
@@ -91,11 +100,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="static/js/ie10-viewport-bug-workaround.js"></script>
       
-<script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
       
   </body>
 </html>
