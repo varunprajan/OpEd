@@ -1,0 +1,18 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+th {
+    text-align: center;
+}
+
+.legend {                                                   /* NEW */
+font-size: 12px;                                          /* NEW */
+}                                                           /* NEW */
+rect {                                                      /* NEW */
+stroke-width: 2;                                          /* NEW */
+}                                                           /* NEW */
+    

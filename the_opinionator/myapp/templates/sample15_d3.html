@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>The Opinionator: How Will Your Opinion Fare?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="static/css/starter-template.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="static/js/ie-emulation-modes-warning.js"></script>
+      
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script> 
+    <script type="text/javascript" src="static/js/jquery.tipsy.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+    <link href="static/css/tipsy.css" rel="stylesheet" type="text/css" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <header class="intro">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/input"><strong>The <img src="{{ url_for('static',filename='monocle_3.png') }}" height="30" width="30">pinionator</strong></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Visualizations <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                  <li><a href="/d32">Time series</a></li>
+                  <li><a href="/d3">Clustering</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More information <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="static/insight_demo.pdf">Presentation</a></li>
+                <li><a href="https://www.linkedin.com/in/varun-rajan-1620a971">LinkedIn</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    </header>
+    
+    <section id="about" class="container content-section text-center">     
+            <h4 style="text-align: center">Clustering of opinion pieces by topic <br> (click legend to hide/show data) </h4>
+        <div class="chart"></div>  
+    <script type="text/javascript">
+
+        
+
+d3.json("/static/try_2.json", function(error, data) {
+  if (error) return console.warn(error);
+       
+
+var height = 600;
+var width = 900;
+var margin = 10;
+var legendRectSize = 26;                                  // NEW
+var legendSpacing = 4;                                    // NEW
+        
+var tidmap = [{"topic": "Elections", "tid": 4},
+              {"topic": "Economy", "tid": 3},
+              {"topic": "Courts and law", "tid": 1},
+              {"topic": "Domestic politics", "tid": 2},
+              {"topic": "Foreign policy", "tid": 5},
+              {"topic": "Banks and finance", "tid": 0},
+              {"topic": "New York", "tid": 8},
+              {"topic": "Police and crime", "tid": 9},
+              {"topic": "Health care", "tid": 7},
+              {"topic": "Government", "tid": 6},
+             ];         
+        
+var labelX = 'X';
+var labelY = 'Y';
+var svg = d3.select('.chart')
+                    .append('svg')
+                    .attr('class', 'chart')
+                    .attr("width", width + 4*margin)
+                    .attr("height", height + margin)
+                    .append("g")
+                    .attr("transform", "translate(" + margin + "," + margin + ")");
+                    
+var x = d3.scale.linear().domain([d3.min(data, function (d) { return d.one; }), d3.max(data, function (d) { return d.one; })]).range([0, width]);
+
+var y = d3.scale.linear()
+					            .domain([d3.min(data, function (d) { return d.two; }), d3.max(data, function (d) { return d.two; })])
+					            .range([height, 0]);
+
+var scale = d3.scale.sqrt()
+					            .domain([d3.min(data, function (d) { return d.shares; }), d3.max(data, function (d) { return d.shares; })])
+					            .range([1, 20]);
+                                
+var color = d3.scale.category10();
+
+var xAxis = d3.svg.axis().scale(x);
+ var yAxis = d3.svg.axis().scale(y).orient("left");
+var active = new Array();
+var opacityon = 0.7;
+var opacityoff = 0.1;    
+for (i = 0; i <= tidmap.length; i++) {
+    active[i] = true;
+}
+
+function include(arr,obj) {
+    return (arr.indexOf(obj) != -1);
+}
+
+svg.selectAll("circle")
+                              .data(data)
+                              .enter()
+                              .insert("circle")
+                            .attr("cx", function (d) { return x(d.one); })
+                            .attr("cy", function (d) { return y(d.two); })
+                              .attr("r", function (d) { return scale(d.shares); })
+                              .style("fill", function (d) { return color(d.tid); })
+                              .attr("opacity", opacityon)
+                             
+                             
+function show(c, opacity) {
+                              svg.selectAll("circle")
+                                  .filter(function (d) {
+                                      return d.tid == c;
+                                  })
+                                .transition()
+                                 .style("opacity", opacity);
+                          }
+        
+function showLegend(c, opacity) {
+                              svg.selectAll('rect')
+                                  .filter(function (d) {
+                                      return d.tid == c;
+                                  })
+                                .transition()
+                                 .style("opacity", opacity);
+                          }
+
+var legend = svg.selectAll('.legend')                     // NEW
+          .data(tidmap)                                   // NEW
+          .enter()                                                // NEW
+          .append('g')                                            // NEW
+          .attr('class', 'legend')                                // NEW
+          .attr('transform', function(d, i) {                     // NEW
+            var h = legendRectSize + legendSpacing;          // NEW
+            var offset =  h * 2 / 2;     // NEW
+            var horz = -5 * legendRectSize + width;                       // NEW
+            var vert = i * h - offset + h;                       // NEW
+            return 'translate(' + horz + ',' + vert + ')';        // NEW
+          });                                                     // NEW
+
+        legend.append('rect')                                     // NEW
+          .attr('width', legendRectSize)                          // NEW
+          .attr('height', legendRectSize)
+          .attr('opacity', opacityon) // NEW
+          .style('fill', function(d) {return color(d.tid); })                                   // NEW
+          .style('stroke', function(d) {return color(d.tid); })
+                              .on('click', function (d) {
+                                  if (active[d.tid]) {
+                                      active[d.tid] = false;
+                                      show(d.tid, opacityoff);
+                                      showLegend(d.tid, opacityoff);
+                                  }
+                                  else {
+                                    active[d.tid] = true;
+                                    show(d.tid, opacityon);
+                                    showLegend(d.tid, opacityon);
+                                  }
+                              });
+          
+        legend.append('text')                                     // NEW
+          .attr('x', legendRectSize + legendSpacing)              // NEW
+          .attr('y', legendRectSize - legendSpacing)              // NEW
+          .style("font-size","15px")
+          .text(function(d) {return d.topic; });                       // NEW
+                
+      $('svg circle').tipsy({ 
+        gravity: 'w', 
+        html: true,
+        opacity: 0.7,
+        title: function() {
+          var d = this.__data__, shares = d.shares;
+          return 'Title: ' + d.title + '<br>' +
+                 'Author: ' + d.author + '<br>' +
+                 'Share count: ' + shares.toString() + '<br>' +
+                 'Primary topic: ' + d.topic + '<br>';
+        }
+      });     
+}); 
+    </script>
+      </section>
+      
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="static/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="static/js/ie10-viewport-bug-workaround.js"></script>
+      
+    </body>
+</html>
