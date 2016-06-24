@@ -93,18 +93,17 @@
                         <option value="{{loop.index}}">{{day}}</option>
                         {% endfor %}
                     </select>
-                </div>
-            
-                <p> </p>
-            
+                </div>           
             
                 <div>
-                    <textarea type="text" rows="10" cols="60" id="full_text" name="full_text" placeholder="Text of opinion piece..."></textarea>
+                    <textarea type="text" rows="10" cols="60" id="full_text" name="full_text" placeholder="Text of opinion piece..."
+                              >{{poptext}}</textarea>
                 </div>
 
                 <p> </p>
                 
                 <div>
+                    
                 <button type="submit" name="Predict" class="btn btn-default">Predict the # of shares</button>
 
                 <button type="submit" name="Similar" class="btn btn-default">Find thematically similar opinions</button>
@@ -112,6 +111,14 @@
                 
             </div>
 
+        </form>
+        
+        <br>
+        
+        <form action="/input" method="GET">
+            <div>
+                <button type="submit" name="Stuck" class="btn btn-default">Stuck? Click here for some sample text</button>
+            </div>
         </form>
     </div>
 

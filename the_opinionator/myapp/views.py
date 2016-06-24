@@ -10,11 +10,19 @@ import markdown
 
 app.var = {}
 
+SAMPLETEXT = u'In general, you shouldn\u2019t pay much attention to polls at this point, especially with Republicans unifying around Donald Trump while Bernie Sanders hasn\u2019t conceded the inevitable. Still, I was struck by several recent polls showing Mr. Trump favored over Hillary Clinton on the question of who can best manage the economy.'
+
 @app.route('/')
 @app.route('/input', methods = ['GET', 'POST'])
 def oped_input():
     if request.method == 'GET':
-        return render_template("input3.html", authorid = AUTHORENCODER.tokentoid, daysofweek = DAYSOFWEEK)
+        if 'Stuck' in request.args.keys():
+            poptext = SAMPLETEXT
+            print('Yay')
+        else:
+            poptext = ''
+        print(poptext)
+        return render_template("input3.html", authorid = AUTHORENCODER.tokentoid, daysofweek = DAYSOFWEEK, poptext = poptext)
     elif request.method == 'POST':
         # app.var['fulltext'] = request.args.get('full_text')
         # app.var['author'] = request.args.get('author')
@@ -67,22 +75,18 @@ def df_to_tabledict(df):
                     'sharecount': rowdata['share_count']})
     return res
 
-@app.route('/d32', methods = ['GET', 'POST'])
+@app.route('/d33', methods = ['GET', 'POST'])
 def d32():
     return render_template('sample10_d3.html')
 
-@app.route('/d33', methods = ['GET', 'POST'])
+@app.route('/d32', methods = ['GET', 'POST'])
 def d33():
     return render_template('sample14_d3.html')
 
-@app.route('/d34', methods = ['GET', 'POST'])
+@app.route('/d3', methods = ['GET', 'POST'])
 def d34():
     return render_template('sample17_d3.html')
 
-@app.route('/input2')
-def input2():
-    return render_template('input2.html')
-
-@app.route('/d3', methods = ['GET', 'POST'])
+@app.route('/d34', methods = ['GET', 'POST'])
 def d3():
     return render_template('sample11_d3.html')

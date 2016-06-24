@@ -21,19 +21,21 @@ def return_df(query):
 
 def all_query():
     return """
-    SELECT orig.*, text.*, non.*, tw.*
+    SELECT orig.*, text.*, non.*, tw.*, sent.*
     FROM orig
         LEFT JOIN tw
             ON orig.index = tw.index
         LEFT JOIN text
             ON orig.index = text.index
         LEFT JOIN non
-            ON orig.index=  non.index
+            ON orig.index = non.index
+        LEFT JOIN sent
+            ON orig.index = sent.index
     """
 
 def author_query(author):
     return """
-    SELECT orig.*, text.*, non.*, tw.*
+    SELECT orig.*, text.*, non.*, tw.*, sent.*
     FROM orig
         LEFT JOIN tw
             ON orig.index = tw.index
@@ -41,5 +43,7 @@ def author_query(author):
             ON orig.index = text.index
         LEFT JOIN non
             ON orig.index=  non.index
+        LEFT JOIN sent
+            ON orig.index = sent.index
     WHERE orig.author = '{0}';
     """.format(author)
