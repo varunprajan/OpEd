@@ -14,7 +14,7 @@ Almost 10,000 opinion pieces, from December 2013 to March 2016, were scraped fro
 
 ### Textual features
 
-Textual features, including topic distributions for each article, were extracted from the text after cleaning (removing stopwords and punctuation, stemming, etc.). The topic analysis was conducted using Latent Dirichlet Allocation using the scikit-learn package in Python. The relevant code is available in the Python file [the_opinionator/text_processing.py] and the iPython notebook [/NLP.ipynb](/NLP.ipynb). The topic clustering visualizations were generated using the scikit-learn implementation of [T-SNE](https://lvdmaaten.github.io/tsne/), a technique for visualizing high-dimensional data in a low-dimensional space; see [T-SNE.ipynb](/the_opinionator/T-SNE.ipynb). Polarization and subjectivity scores for each opinion piece were extracted, albeit crudely, using the TextBlob package in Python; see [Sentiment.ipynb](/the_opinionator/Sentiment.ipynb).
+Textual features, including topic distributions for each article, were extracted from the text after cleaning (removing stopwords and punctuation, stemming, etc.). The topic analysis was conducted using Latent Dirichlet Allocation using the scikit-learn package in Python. The relevant code is available in the Python file [the_opinionator/text_processing.py](/the_opinionator/text_processing.py) and the iPython notebook [/NLP.ipynb](/the_opinionator/NLP.ipynb). The topic clustering visualizations were generated using the scikit-learn implementation of [T-SNE](https://lvdmaaten.github.io/tsne/), a technique for visualizing high-dimensional data in a low-dimensional space; see [T-SNE.ipynb](/the_opinionator/T-SNE.ipynb). Polarization and subjectivity scores for each opinion piece were extracted, albeit crudely, using the TextBlob package in Python; see [Sentiment.ipynb](/the_opinionator/Sentiment.ipynb).
 
 ### Non-textual features
 
@@ -22,4 +22,14 @@ Non-textual features, such as the author writing the article as well as the day 
 
 ### Machine learning
 
-The number of Facebook shares was log-transformed to narrow the range of the target variable and to bring its distribution closer to normality. All of the feature and target data was stored in a PostgreSQL database, and various regression models were explored using scikit-learn and evaluated using scores on a k-fold cross-validation. Linear regression with L2 regularization was ultimately used because its cross-validation performance was nearly identical to other, more sophisticated/nonlinear models, and because it is easily interpretable. Details can be found in the iPython notebook [SQL_Machine_Learning.ipynb](the_opinionator/SQL_Machine_Learning.ipynb)
+The number of Facebook shares was log-transformed to narrow the range of the target variable and to bring its distribution closer to normality. All of the feature and target data was stored in a PostgreSQL database, and various regression models were explored using scikit-learn and evaluated using scores on a k-fold cross-validation. Linear regression with L2 regularization was ultimately used because its cross-validation performance was nearly identical to other, more sophisticated/nonlinear models, and because it is easily interpretable. Details can be found in the iPython notebook [SQL_Machine_Learning.ipynb](the_opinionator/SQL_Machine_Learning.ipynb).
+
+### Web app
+
+The web app was built using Flask; see the Python code in [views.py](/the_opinionator/myapp/views.py) and associated HTML/CSS files in the same directory.
+
+## Contact
+
+If you're interested in learning more about the project, feel free to contact me on [LinkedIn](https://www.linkedin.com/in/varun-rajan-1620a971).
+
+
